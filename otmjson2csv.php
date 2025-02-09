@@ -8,7 +8,7 @@
 
 		$returns = array();
 
-		// $returns[] = ['word', 'title', 'translation', 'title2', 'translation2', 'title3', 'translation3', 'definition'];
+		// $returns[] = ['word', 'title', 'translation', 'title2', 'translation2', 'title3', 'translation3', 'definition', 'abbreviation'];
 
 		foreach($arr["words"] as $entryId => $word){
 			$translations = $word["translations"];
@@ -24,11 +24,13 @@
 						$text =$text . "、";
 					}
 				}
+				//最大3つとする
 				$return[] = $text;
 				if($i === 3){
 					break;
 				}
 			}
+
 			// 訳語が少ないものとのバランスをとる
 			$return = array_pad($return, 7, "");
 
@@ -39,6 +41,15 @@
 				}
 			}
 			$return = array_pad($return, 8, "");
+
+			//省略語の場合最後に追加
+			foreach($word["relations"] as $relation){
+				if($relation["title"] === "省略"){
+					$return[] = "= " . $relation["entry"]["form"];
+				}
+			}
+			$return = array_pad($return, 9, "");
+
 		}
 		return $returns;
 	}
